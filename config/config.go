@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"errors"
 
 	conf "github.com/robfig/config"
 )
@@ -46,17 +46,16 @@ func LoadConfigFile() error {
 	return nil
 }
 
-func InitConfigEnv(en map[string]string) {
+func InitConfigEnv(en map[string]string) error {
 	var err error
 	env = en
 	_, ok := env["config"]
 	_, ok1 := env["section"]
 	if !ok || !ok1 {
-		log.Fatalf("config and section not found in Env\n")
+		return errors.New("config and section not found in Env")
 	}
 	configpath, _ := env["config"]
 	defaultConfig, err = conf.ReadDefault(configpath)
-	if err != nil {
-		log.Fatalf("ReadDefault failed. err=%v\n", err)
-	}
+
+	return err
 }
